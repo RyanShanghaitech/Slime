@@ -3,145 +3,163 @@ import skimage as ski
 from enum import Enum
 
 class Part(Enum):
-    ArmL = 1
-    ArmR = 2
-    Fat = 3
-    Body = 4
-    Myo = 5
-    Blood = 6
+    Air = 0
+    Fat = 1
+    Body = 2
+    Myo = 3
+    Blood = 4
+    Other = 5
 
 # update masks
-def _updateMask(
-    t:float, z:float, nPix:int,
+def _updateMask_Dynamic(
+    z:int|float, nPix:int,
     # mask to be updated
     mskFatOt:ndarray,
     mskFatIn:ndarray,
-    mskArmL:ndarray,
-    mskArmR:ndarray,
     mskMyoOt:ndarray,
     mskMyoIn:ndarray,
     # motion parameter
-    cycRes:float|int, # s
-    cycHea:float|int, # s
     ampRes:float|int,
-    ampMyoOt:float|int,
-    ampMyoIn:float|int
+    ampCar:float|int,
 ) -> None:
     # masks
     mskFatOt.fill(0)
     mskFatIn.fill(0)
-    mskArmL.fill(0)
-    mskArmR.fill(0)
     mskMyoOt.fill(0)
     mskMyoIn.fill(0)
 
-    # Breathing phase and Heabeat phase (using sine waves)
-    phRes = (t/cycRes)*2*pi
-    phHea = (t/cycHea)*2*pi
-
     # draw body parts
     # Outer border of fat (expanding and contracting with breathing)
-    y = nPix*500e-3 - (1-z/nPix)*nPix*ampRes*sin(phRes)
-    x = nPix*500e-3
-    rY = nPix*250e-3 + (1-z/nPix)*nPix*ampRes*sin(phRes)
-    rX = nPix*300e-3
-    tupPtFatOt = ski.draw.ellipse(y, x, rY, rX, (nPix,nPix), pi*0e-2)
-    mskFatOt[tupPtFatOt] = 1
+    y = 0 # -(1-z/nPix)*nPix*ampRes
+    x = 0
+    rY = nPix*400e-3 + (1-z/nPix)*nPix*ampRes
+    rX = nPix*400e-3 - (1-z/nPix)*nPix*ampRes
+    rZ = nPix*480e-3
+    rhs = 1 - (z/rZ)**2
+    if rhs >= 0:
+        tupPtFatOt = ski.draw.ellipse(y+nPix//2, x+nPix//2, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix), pi*0e-2)
+        mskFatOt[tupPtFatOt] = 1
     
     # Inner border of fat
-    y = nPix*500e-3 - (1-z/nPix)*nPix*ampRes*sin(phRes)
-    x = nPix*500e-3
-    rY = nPix*200e-3 - (1+tanh(8*z/nPix))*nPix*10e-3 + (1-z/nPix)*nPix*ampRes*sin(phRes)
-    rX = nPix*250e-3 - (1+tanh(8*z/nPix))*nPix*10e-3
-    tupPtFatIn = ski.draw.ellipse(y, x, rY, rX, (nPix,nPix), pi*5e-2)
-    mskFatIn[tupPtFatIn] = 1
-
-    # draw arms
-    # Left arm
-    y = nPix*550e-3
-    x = nPix*500e-3-nPix*400e-3
-    rY = nPix*60e-3 + 40e-3*(nPix/2 - abs(z))
-    rX = nPix*80e-3
-    tupPtArmL = ski.draw.ellipse(y, x, rY, rX, (nPix,nPix), -pi*5e-2)
-    mskArmL[tupPtArmL] = 1
-    
-    # Right arm
-    y = nPix*550e-3
-    x = nPix*500e-3+nPix*400e-3
-    rY = nPix*60e-3 + 40e-3*(nPix/2 - abs(z))
-    rX = nPix*80e-3
-    tupPtArmR = ski.draw.ellipse(y, x, rY, rX, (nPix,nPix), pi*0e-2)
-    mskArmR[tupPtArmR] = 1
+    y = 0 # -(1-z/nPix)*nPix*ampRes
+    x = 0
+    rY = nPix*380e-3 + (1-z/nPix)*nPix*ampRes
+    rX = nPix*380e-3 - (1-z/nPix)*nPix*ampRes
+    rZ = nPix*450e-3
+    rhs = 1 - (z/rZ)**2
+    if rhs >= 0:
+        tupPtFatIn = ski.draw.ellipse(y+nPix//2, x+nPix//2, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix), pi*2e-2)
+        mskFatIn[tupPtFatIn] = 1
 
     # draw heart
     # Outer ellipse
-    y = nPix*500e-3 - (1-z/nPix)*nPix*ampRes*sin(phRes) - nPix*60e-3
-    x = nPix*500e-3
-    rY = nPix*100e-3 + nPix*ampMyoOt*sin(phHea)
-    rX = nPix*125e-3 + nPix*ampMyoOt*sin(phHea)
+    y = 0 # -(1-z/nPix)*nPix*ampRes
+    x = 0
+    rY = nPix*100e-3 + nPix*ampCar
+    rX = nPix*120e-3 + nPix*ampCar
     rZ = rY
-    rhs = 1 - ((z+nPix/4)/rZ)**2
-    if rhs > 0:
-        tupPtMyoOt = ski.draw.ellipse(y, x, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix))
+    rhs = 1 - (z/rZ)**2
+    if rhs >= 0:
+        tupPtMyoOt = ski.draw.ellipse(y+nPix//2, x+nPix//2, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix))
         mskMyoOt[tupPtMyoOt] = 1
 
     # Inner ellipse
-    y = nPix*500e-3 - (1-z/nPix)*nPix*ampRes*sin(phRes) - nPix*60e-3
-    x = nPix*500e-3 - nPix*20e-3
-    rY = nPix*60e-3  + nPix*ampMyoIn*sin(phHea)
-    rX = nPix*60e-3  + nPix*ampMyoIn*sin(phHea)
+    y = 0 # -(1-z/nPix)*nPix*ampRes
+    x = -nPix*20e-3
+    rY = nPix*60e-3  + nPix*2*ampCar
+    rX = nPix*60e-3  + nPix*2*ampCar
     rZ = rY
-    rhs = 1 - ((z+nPix/4)/rZ)**2
+    rhs = 1 - (z/rZ)**2
     if rhs > 0:
-        tupPtMyoIn = ski.draw.ellipse(y, x, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix))
+        tupPtMyoIn = ski.draw.ellipse(y+nPix//2, x+nPix//2, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix))
         mskMyoIn[tupPtMyoIn] = 1
+
+def _updateMask_Fixed(
+    z:int|float, nPix:int,
+    lstMskEl:list[ndarray],
+) -> None:
+    # masks
+    for msk in lstMskEl: msk.fill(0)
+
+    # draw eln
+    arrY, arrX = meshgrid\
+    (
+        arange(-nPix//2,nPix//2),
+        arange(-nPix//2,nPix//2),
+        indexing="ij"
+    )
+    arrYX = array([arrY,arrX]).transpose(1,2,0)
+
+    nEl = len(lstMskEl)
+    r0 = (nPix*2e-1)/(nEl-1)/3
+    arrOzy = array([
+        [0, -nPix*0.25],
+        [0, nPix*0.25],
+        [-nPix*0.25, 0],
+        [nPix*0.25, 0],
+    ])
+    for Oz, Oy in arrOzy:
+        arrOyx = array([
+            Oy*ones([nEl]),
+            linspace(-nPix*1e-1, nPix*1e-1, nEl),
+        ]).T
+        
+        for iM in range(nEl):
+            Oy, Ox = arrOyx[iM,:]
+            r = r0*(1 - abs(Ox-nPix*1e-1)/(nPix*2e-1)/2)
+            lstMskEl[iM][sum((arrYX-arrOyx[iM,:])**2,axis=-1) < r**2 - (z-Oz)**2] = 1
 
 def genPhantom\
 (
-    arrT:ndarray, arrZ:ndarray, nPix:int,
+    nDim:int=2, nPix:int=256,
     # motion parameter
-    cycRes = 2*pi, # s
-    cycHea = 1, # s
-    ampRes = 5e-3,
-    ampMyoOt = 8e-3,
-    ampMyoIn = 16e-3,
+    arrAmp:ndarray=array([[0e-3,0e-3]]),
+    # number of additional ellipsoid
+    nEl:int=5,
 ):
+    assert nDim==2 or nDim==3
+    if nDim==2: arrZ = array([0])
+    if nDim==3: arrZ = arange(-nPix//2,nPix//2)
+    nT = arrAmp.shape[0]
+    nZ = arrZ.size
     # image array
-    arrP = zeros([arrT.size,arrZ.size,nPix,nPix], dtype=uint8)
+    arrPhan = zeros([nT,nZ,nPix,nPix], dtype=uint8)
 
     # masks
     mskFatOt = zeros([nPix,nPix], dtype=bool)
     mskFatIn = zeros([nPix,nPix], dtype=bool)
-    mskArmL = zeros([nPix,nPix], dtype=bool)
-    mskArmR = zeros([nPix,nPix], dtype=bool)
     mskMyoOt = zeros([nPix,nPix], dtype=bool)
     mskMyoIn = zeros([nPix,nPix], dtype=bool)
+    lstMskEl = [zeros([nPix,nPix], dtype=bool) for _ in range(nEl)]
 
     # clear image
-    arrP.fill(0)
-    for iT in range(arrT.size):
-        for iZ in range(arrZ.size):
-            t = arrT[iT]
-            z = arrZ[iZ]
+    arrPhan.fill(0)
+    for iZ in range(nZ):
+        z = arrZ[iZ]
+        _updateMask_Fixed \
+        (
+            z, nPix,
+            lstMskEl
+        )
+        for iT in range(nT):
 
-            _updateMask \
+            _updateMask_Dynamic \
             (
-                t, z, nPix,
-                mskFatOt, mskFatIn, mskArmL, mskArmR, mskMyoOt, mskMyoIn,
-                cycRes, cycHea, ampRes, ampMyoOt, ampMyoIn,
+                z, nPix,
+                mskFatOt, mskFatIn, mskMyoOt, mskMyoIn,
+                arrAmp[iT,0], arrAmp[iT,1]
             )
         
-            # fill left arm
-            arrP[iT][iZ][mskArmL] = Part.ArmL.value
-            # fill right arm
-            arrP[iT][iZ][mskArmR] = Part.ArmR.value
             # fill fat
-            arrP[iT][iZ][mskFatOt & ~mskFatIn] = Part.Fat.value
+            arrPhan[iT][iZ][mskFatOt & ~mskFatIn] = Part.Fat.value
             # fill body
-            arrP[iT][iZ][mskFatIn & ~mskMyoOt] = Part.Body.value
+            arrPhan[iT][iZ][mskFatIn & ~mskMyoOt] = Part.Body.value
             # fill myocardium
-            arrP[iT][iZ][mskMyoOt & ~mskMyoIn] = Part.Myo.value
+            arrPhan[iT][iZ][mskMyoOt & ~mskMyoIn] = Part.Myo.value
             # fill blood pool
-            arrP[iT][iZ][mskMyoIn] = Part.Blood.value
+            arrPhan[iT][iZ][mskMyoIn] = Part.Blood.value
+            # fill ellipsoid_n
+            for msk in lstMskEl:
+                arrPhan[iT][iZ][msk] = Part.Other.value
 
-    return arrP
+    return arrPhan
