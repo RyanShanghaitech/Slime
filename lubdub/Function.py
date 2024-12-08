@@ -41,18 +41,18 @@ def _updateMask(
 
     # draw body parts
     # Outer border of fat (expanding and contracting with breathing)
-    y = nPix*500e-3 - (1-abs(z/nPix))*nPix*ampRes*sin(phRes)
+    y = nPix*500e-3 - (1-z/nPix)*nPix*ampRes*sin(phRes)
     x = nPix*500e-3
-    rY = nPix*250e-3 + (1-abs(z/nPix))*nPix*ampRes*sin(phRes)
+    rY = nPix*250e-3 + (1-z/nPix)*nPix*ampRes*sin(phRes)
     rX = nPix*300e-3
     tupPtFatOt = ski.draw.ellipse(y, x, rY, rX, (nPix,nPix), pi*0e-2)
     mskFatOt[tupPtFatOt] = 1
     
     # Inner border of fat
-    y = nPix*500e-3 - (1-abs(z/nPix))*nPix*ampRes*sin(phRes)
+    y = nPix*500e-3 - (1-z/nPix)*nPix*ampRes*sin(phRes)
     x = nPix*500e-3
-    rY = nPix*250e-3 - nPix*30e-3 + (1-abs(z/nPix))*nPix*ampRes*sin(phRes)
-    rX = nPix*300e-3 - nPix*30e-3
+    rY = nPix*200e-3 - (1+tanh(8*z/nPix))*nPix*10e-3 + (1-z/nPix)*nPix*ampRes*sin(phRes)
+    rX = nPix*250e-3 - (1+tanh(8*z/nPix))*nPix*10e-3
     tupPtFatIn = ski.draw.ellipse(y, x, rY, rX, (nPix,nPix), pi*5e-2)
     mskFatIn[tupPtFatIn] = 1
 
@@ -60,7 +60,7 @@ def _updateMask(
     # Left arm
     y = nPix*550e-3
     x = nPix*500e-3-nPix*400e-3
-    rY = nPix*80e-3 + 20e-3*(nPix/2 - abs(z))
+    rY = nPix*60e-3 + 40e-3*(nPix/2 - abs(z))
     rX = nPix*80e-3
     tupPtArmL = ski.draw.ellipse(y, x, rY, rX, (nPix,nPix), -pi*5e-2)
     mskArmL[tupPtArmL] = 1
@@ -68,30 +68,30 @@ def _updateMask(
     # Right arm
     y = nPix*550e-3
     x = nPix*500e-3+nPix*400e-3
-    rY = nPix*80e-3 + 20e-3*(nPix/2 - abs(z))
+    rY = nPix*60e-3 + 40e-3*(nPix/2 - abs(z))
     rX = nPix*80e-3
     tupPtArmR = ski.draw.ellipse(y, x, rY, rX, (nPix,nPix), pi*0e-2)
     mskArmR[tupPtArmR] = 1
 
     # draw heart
     # Outer ellipse
-    y = nPix*500e-3 - (1-abs(z/nPix))*nPix*ampRes*sin(phRes) - nPix*60e-3
+    y = nPix*500e-3 - (1-z/nPix)*nPix*ampRes*sin(phRes) - nPix*60e-3
     x = nPix*500e-3
     rY = nPix*100e-3 + nPix*ampMyoOt*sin(phHea)
     rX = nPix*125e-3 + nPix*ampMyoOt*sin(phHea)
     rZ = rY
-    rhs = 1 - (z/rZ)**2
+    rhs = 1 - ((z+nPix/4)/rZ)**2
     if rhs > 0:
         tupPtMyoOt = ski.draw.ellipse(y, x, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix))
         mskMyoOt[tupPtMyoOt] = 1
 
     # Inner ellipse
-    y = nPix*500e-3 - (1-abs(z/nPix))*nPix*ampRes*sin(phRes) - nPix*60e-3
+    y = nPix*500e-3 - (1-z/nPix)*nPix*ampRes*sin(phRes) - nPix*60e-3
     x = nPix*500e-3 - nPix*20e-3
     rY = nPix*60e-3  + nPix*ampMyoIn*sin(phHea)
     rX = nPix*60e-3  + nPix*ampMyoIn*sin(phHea)
     rZ = rY
-    rhs = 1 - (z/rZ)**2
+    rhs = 1 - ((z+nPix/4)/rZ)**2
     if rhs > 0:
         tupPtMyoIn = ski.draw.ellipse(y, x, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix))
         mskMyoIn[tupPtMyoIn] = 1
