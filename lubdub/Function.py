@@ -33,7 +33,7 @@ def _updateMask_Dynamic(
     y = 0 # -(1-z/nPix)*nPix*ampRes
     x = 0
     rY = nPix*400e-3 + (1-z/nPix)*nPix*ampRes
-    rX = nPix*400e-3 - (1-z/nPix)*nPix*ampRes
+    rX = nPix*400e-3 - 0.5*(1-z/nPix)*nPix*ampRes
     rZ = nPix*480e-3
     rhs = 1 - (z/rZ)**2
     if rhs >= 0:
@@ -44,7 +44,7 @@ def _updateMask_Dynamic(
     y = 0 # -(1-z/nPix)*nPix*ampRes
     x = 0
     rY = nPix*380e-3 + (1-z/nPix)*nPix*ampRes
-    rX = nPix*380e-3 - (1-z/nPix)*nPix*ampRes
+    rX = nPix*380e-3 - 0.5*(1-z/nPix)*nPix*ampRes
     rZ = nPix*450e-3
     rhs = 1 - (z/rZ)**2
     if rhs >= 0:
@@ -106,7 +106,7 @@ def _updateMask_Fixed(
         
         for iM in range(nEl):
             Oy, Ox = arrOyx[iM,:]
-            r = r0*(1 - abs(Ox-nPix*1e-1)/(nPix*2e-1)/2)
+            r = r0*(1 - abs(Ox-nPix*1e-1)/(nPix*2e-1)*3/4)
             lstMskEl[iM][sum((arrYX-arrOyx[iM,:])**2,axis=-1) < r**2 - (z-Oz)**2] = 1
 
 def genPhantom\
