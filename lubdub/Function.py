@@ -93,8 +93,8 @@ def _updateMask_Fixed(
     nEl = len(lstMskEl)
     r0 = (nPix*2e-1)/(nEl-1)/3
     arrOzy = array([
-        [0, -nPix*0.25],
-        [0, nPix*0.25],
+        [0, -nPix*0.20],
+        [0, nPix*0.20],
         [-nPix*0.25, 0],
         [nPix*0.25, 0],
     ])

@@ -6,20 +6,19 @@ from scipy.ndimage import gaussian_filter
 
 tScan = 100
 tRes = 10
-nPix = 256
 nT = tScan*tRes # int(2*pi*30)
+nPix = 256
 nZ = 1
 
-cycRes = 2*pi
+cycRes = pi
 cycCar = 1
 
 tElapse = time()
-arrT_Res = sort(random.rand(nT)*tScan)
-arrT_Car = linspace(0, tScan, nT)
-ampRes = 20e-3*sin(2*pi/cycRes*arrT_Res); ampRes = gaussian_filter(ampRes, tRes)
-ampCar = 10e-3*sin(2*pi/cycCar*arrT_Car)
+
+ampRes = 20e-3*lubdub.genAmp(tScan, tRes, cycRes, 1)
+ampCar = 10e-3*lubdub.genAmp(tScan, tRes, cycCar, 0)
 arrP = lubdub.genPhantom(2, nPix, array([ampRes, ampCar]).T)
-print(arrP.shape)
+
 tElapse = time() - tElapse
 print(f"tElapse: {tElapse}")
 
