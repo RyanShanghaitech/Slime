@@ -1,11 +1,11 @@
 from numpy import *
 from matplotlib.pyplot import *
-import lubdub
+import slime
 
 # 2D
-nPix = 256
-arrPhan = lubdub.genPhantom(nPix=nPix).squeeze()
-arrPhan = lubdub.Enum2M0(arrPhan)
+nPix = 128
+arrPhan = slime.genPhan(nPix=nPix).squeeze()
+arrPhan = slime.Enum2M0(arrPhan)
 
 figure(figsize=(9,9), dpi=120)
 imshow(arrPhan, cmap="gray"); colorbar()
@@ -13,8 +13,8 @@ draw(); pause(0.5)
 
 # 3D
 nPix = 128
-arrPhan = lubdub.genPhantom(nDim=3,nPix=nPix).squeeze()
-arrPhan = lubdub.Enum2M0(arrPhan)
+arrPhan = slime.genPhan(nDim=3,nPix=nPix).squeeze()
+arrPhan = slime.Enum2M0(arrPhan)
 
 figure(figsize=(9,3), dpi=120)
 subplot(131)
@@ -32,10 +32,10 @@ tRes = 128
 nT = tScan*tRes # int(2*pi*30)
 cycRes = pi
 cycCar = 1
-ampRes = 20e-3*lubdub.genAmp(tScan, tRes, cycRes, 1)
-ampCar = 10e-3*lubdub.genAmp(tScan, tRes, cycCar, 0)
-arrPhan = lubdub.genPhantom(nPix=nPix,arrAmp=vstack([ampRes,ampCar]).T).squeeze()
-arrPhan = lubdub.Enum2M0(arrPhan)
+ampRes = 20e-3*slime.genAmp(tScan, tRes, cycRes, 1)
+ampCar = 10e-3*slime.genAmp(tScan, tRes, cycCar, 0)
+arrPhan = slime.genPhan(nPix=nPix,arrAmp=vstack([ampRes,ampCar]).T).squeeze()
+arrPhan = slime.Enum2M0(arrPhan)
 
 figure(figsize=(9,9), dpi=120)
 axim = imshow(arrPhan[0,:,:], cmap="gray"); colorbar()

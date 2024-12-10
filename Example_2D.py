@@ -1,8 +1,7 @@
 from numpy import *
 from matplotlib.pyplot import *
-import lubdub
+import slime
 from time import time
-from scipy.ndimage import gaussian_filter
 
 tScan = 100
 tRes = 10
@@ -15,14 +14,14 @@ cycCar = 1
 
 tElapse = time()
 
-ampRes = 20e-3*lubdub.genAmp(tScan, tRes, cycRes, 1)
-ampCar = 10e-3*lubdub.genAmp(tScan, tRes, cycCar, 0)
-arrP = lubdub.genPhantom(2, nPix, array([ampRes, ampCar]).T)
+ampRes = 20e-3*slime.genAmp(tScan, tRes, cycRes, 1)
+ampCar = 10e-3*slime.genAmp(tScan, tRes, cycCar, 0)
+arrP = slime.genPhan(2, nPix, array([ampRes, ampCar]).T)
 
 tElapse = time() - tElapse
 print(f"tElapse: {tElapse}")
 
-arrM0 = lubdub.Enum2M0(arrP)
+arrM0 = slime.Enum2M0(arrP)
 
 iT = 3
 

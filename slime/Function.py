@@ -91,31 +91,31 @@ def _updateMask_Fixed(
     arrYX = array([arrY,arrX]).transpose(1,2,0)
 
     nEl = len(lstMskEl)
-    r0 = (nPix*2e-1)/(nEl-1)/3
+    r0 = (nPix*4e-1)/(nEl+1)/2; r0 *= 3/4
     arrOzy = array([
         [0, -nPix*0.20],
         [0, nPix*0.20],
         [-nPix*0.25, 0],
         [nPix*0.25, 0],
-    ])
+    ]); arrOzy = around(arrOzy)
     for Oz, Oy in arrOzy:
         arrOyx = array([
             Oy*ones([nEl]),
-            linspace(-nPix*1e-1, nPix*1e-1, nEl),
-        ]).T
+            linspace(-nPix*2e-1, nPix*2e-1, nEl+2, 1)[1:-1],
+        ]).T; arrOyx = around(arrOyx)
         
         for iM in range(nEl):
             Oy, Ox = arrOyx[iM,:]
-            r = r0*(1 - abs(Ox-nPix*1e-1)/(nPix*2e-1)*3/4)
+            r = r0*(1 - abs(Ox-nPix*2e-1)/(nPix*4e-1))
             lstMskEl[iM][sum((arrYX-arrOyx[iM,:])**2,axis=-1) < r**2 - (z-Oz)**2] = 1
 
-def genPhantom\
+def genPhan\
 (
     nDim:int=2, nPix:int=256,
     # motion parameter
     arrAmp:ndarray=array([[0e-3,0e-3]]),
-    # number of additional ellipsoid
-    nEl:int=5,
+    # number of additional ellipsoids for resolution test
+    nEl=5,
 ):
     assert nDim==2 or nDim==3
     if nDim==2: arrZ = array([0])
