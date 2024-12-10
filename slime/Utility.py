@@ -2,32 +2,37 @@ from numpy import *
 from .Function import Part
 from scipy.ndimage import gaussian_filter
 
-def genPhMap(nDim:int=2, nPix:int=256, norm:bool=True) -> ndarray:
+def genPhMap(nDim:int=2, nPix:int=256, std:int|float=pi/3) -> ndarray:
     """
     # return
     smooth complex rotation factor
     """
     mapPh = random.uniform(-pi, pi, [nPix for _ in range(nDim)])
-    mapPh = exp(1j*mapPh)
-    sigma = nPix/2
+    sigma = nPix
     mapPh = gaussian_filter(mapPh, sigma)
+    # normalize
+    mapPh -= mapPh.mean(); mapPh = asarray(mapPh)
+    mapPh /= mapPh.std()
+    mapPh *= std
+    # add phase shift
+    mapPh += random.uniform(-pi, pi)
+    # convert to rotation factor
+    mapPh = exp(1j*mapPh)
     mapPh = mapPh/abs(mapPh)
-    if norm:
-        mapPh /= exp(1j*angle(mapPh).mean())
     return mapPh
 
-def genB0Map(nDim:int=2, nPix:int=256, stdOm:int|float=1, norm:bool=True) -> ndarray:
+def genB0Map(nDim:int=2, nPix:int=256, std:int|float=1e-6*(2*pi*42.58e6*3)) -> ndarray:
     """
     # return
     smooth random number
     """
-    mapB0 = random.uniform(-stdOm, stdOm, [nPix for _ in range(nDim)])
-    sigma = nPix/2
+    mapB0 = random.uniform(-1, 1, [nPix for _ in range(nDim)])
+    sigma = nPix
     mapB0 = gaussian_filter(mapB0, sigma)
-    if norm:
-        mapB0 -= mapB0.mean(); mapB0 = asarray(mapB0)
-        mapB0 /= mapB0.std()
-        mapB0 *= stdOm
+    # normalize
+    mapB0 -= mapB0.mean(); mapB0 = asarray(mapB0)
+    mapB0 /= mapB0.std()
+    mapB0 *= std
     return mapB0
 
 def genAmp(tScan:int|float, tRes:int|float, cyc:int|float, isRand:bool=True):
@@ -51,43 +56,43 @@ def genAmp(tScan:int|float, tRes:int|float, cyc:int|float, isRand:bool=True):
 
     return arrAmp
 
-def Enum2M0(arrIn:ndarray) -> ndarray:
-    arrOt = zeros_like(arrIn, dtype=float64)
-    arrOt[arrIn==Part.Air.value] = random.randn(sum(arrIn==Part.Air.value))*1e-3
-    arrOt[arrIn==Part.Fat.value] = 1.0
-    arrOt[arrIn==Part.Body.value] = 0.5
-    arrOt[arrIn==Part.Myo.value] = 0.2
-    arrOt[arrIn==Part.Blood.value] = 0.8
-    arrOt[arrIn==Part.Other.value] = 1.0
-    return arrOt
+def Enum2M0(arrPhan:ndarray) -> ndarray:
+    mapM0 = zeros_like(arrPhan, dtype=float64)
+    mapM0[arrPhan==Part.Air.value] = random.randn(sum(arrPhan==Part.Air.value))*1e-3
+    mapM0[arrPhan==Part.Fat.value] = 1.0
+    mapM0[arrPhan==Part.Body.value] = 0.5
+    mapM0[arrPhan==Part.Myo.value] = 0.2
+    mapM0[arrPhan==Part.Blood.value] = 0.8
+    mapM0[arrPhan==Part.Other.value] = 1.0
+    return mapM0
 
-def Enum2T1(arrIn:ndarray) -> ndarray:
-    arrOt = zeros_like(arrIn, dtype=float64)
-    arrOt[arrIn==Part.Air.value] = 10000e-3 #random.uniform(1e-3, 10000e-3, sum(arrIn==Part.Air.value))
-    arrOt[arrIn==Part.Fat.value] = 350e-3
-    arrOt[arrIn==Part.Body.value] = 1600e-3
-    arrOt[arrIn==Part.Myo.value] = 1300e-3
-    arrOt[arrIn==Part.Blood.value] = 1500e-3
-    arrOt[arrIn==Part.Other.value] = 1000e-3 # arbitary value
-    return arrOt
+def Enum2T1(arrPhan:ndarray) -> ndarray:
+    mapT1 = zeros_like(arrPhan, dtype=float64)
+    mapT1[arrPhan==Part.Air.value] = inf # 10000e-3 #random.uniform(1e-3, 10000e-3, sum(arrPhan==Part.Air.value))
+    mapT1[arrPhan==Part.Fat.value] = 350e-3
+    mapT1[arrPhan==Part.Body.value] = 1600e-3
+    mapT1[arrPhan==Part.Myo.value] = 1300e-3
+    mapT1[arrPhan==Part.Blood.value] = 1500e-3
+    mapT1[arrPhan==Part.Other.value] = 1000e-3 # arbitary value
+    return mapT1
 
-def Enum2T2(arrIn:ndarray) -> ndarray:
-    arrOt = zeros_like(arrIn, dtype=float64)
-    arrOt[arrIn==Part.Air.value] = 1e-3 # random.uniform(1e-3, 1000e-3, sum(arrIn==Part.Air.value))
-    arrOt[arrIn==Part.Fat.value] = 75e-3
-    arrOt[arrIn==Part.Body.value] = 40e-3
-    arrOt[arrIn==Part.Myo.value] = 50e-3
-    arrOt[arrIn==Part.Blood.value] = 225e-3
-    arrOt[arrIn==Part.Other.value] = 10e-3 # arbitary value
-    return arrOt
+def Enum2T2(arrPhan:ndarray) -> ndarray:
+    mapT2 = zeros_like(arrPhan, dtype=float64)
+    mapT2[arrPhan==Part.Air.value] = inf # 1e-3 # random.uniform(1e-3, 1000e-3, sum(arrPhan==Part.Air.value))
+    mapT2[arrPhan==Part.Fat.value] = 75e-3
+    mapT2[arrPhan==Part.Body.value] = 40e-3
+    mapT2[arrPhan==Part.Myo.value] = 50e-3
+    mapT2[arrPhan==Part.Blood.value] = 225e-3
+    mapT2[arrPhan==Part.Other.value] = 10e-3 # arbitary value
+    return mapT2
 
-def Enum2Om(arrIn:ndarray, B0:int|float=3) -> ndarray:
-    arrOt = zeros_like(arrIn, dtype=float64)
+def Enum2Om(arrPhan:ndarray, B0:int|float=3) -> ndarray:
+    mapOm = zeros_like(arrPhan, dtype=float64)
     ppm2om = 1e-6*(2*pi*42.58e6*B0)
-    arrOt[arrIn==Part.Air.value] = random.uniform(1e-3, 10e-3, sum(arrIn==Part.Air.value))*ppm2om
-    arrOt[arrIn==Part.Fat.value] = 3.5*ppm2om
-    arrOt[arrIn==Part.Body.value] = 0
-    arrOt[arrIn==Part.Myo.value] = 0
-    arrOt[arrIn==Part.Blood.value] = 0
-    arrOt[arrIn==Part.Other.value] = 1*ppm2om
-    return arrOt
+    mapOm[arrPhan==Part.Air.value] = random.uniform(1e-3, 10e-3, sum(arrPhan==Part.Air.value))*ppm2om
+    mapOm[arrPhan==Part.Fat.value] = 3.5*ppm2om
+    mapOm[arrPhan==Part.Body.value] = 0
+    mapOm[arrPhan==Part.Myo.value] = 0
+    mapOm[arrPhan==Part.Blood.value] = 0
+    mapOm[arrPhan==Part.Other.value] = 1*ppm2om
+    return mapOm
