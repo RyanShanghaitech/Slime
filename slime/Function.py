@@ -24,10 +24,10 @@ def _updateMask_Dynamic(
 
     # draw body parts
     # Outer border of fat (expanding and contracting with breathing)
-    y = 0 # -(1-z/nPix)*nPix*ampRes
+    y = 0 # -(1/2-abs(z/nPix))*nPix*ampRes
     x = 0
-    rY = nPix*400e-3 + (1-z/nPix)*nPix*ampRes
-    rX = nPix*400e-3 - 0.5*(1-z/nPix)*nPix*ampRes
+    rY = nPix*400e-3 + (1/2-abs(z/nPix))*nPix*ampRes
+    rX = nPix*400e-3 - 0.5*(1/2-abs(z/nPix))*nPix*ampRes
     rZ = nPix*480e-3
     rhs = 1 - (z/rZ)**2
     if rhs >= 0:
@@ -35,19 +35,19 @@ def _updateMask_Dynamic(
         mskFatOt[tupPtFatOt] = 1
     
     # Inner border of fat
-    y = 0 # -(1-z/nPix)*nPix*ampRes
+    y = 0 # -(1/2-abs(z/nPix))*nPix*ampRes
     x = 0
-    rY = nPix*380e-3 + (1-z/nPix)*nPix*ampRes
-    rX = nPix*380e-3 - 0.5*(1-z/nPix)*nPix*ampRes
+    rY = nPix*380e-3 + (1/2-abs(z/nPix))*nPix*ampRes
+    rX = nPix*380e-3 - 0.5*(1/2-abs(z/nPix))*nPix*ampRes
     rZ = nPix*450e-3
     rhs = 1 - (z/rZ)**2
     if rhs >= 0:
-        tupPtFatIn = ski.draw.ellipse(y+nPix//2, x+nPix//2, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix), pi*2e-2)
+        tupPtFatIn = ski.draw.ellipse(y+nPix//2, x+nPix//2, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix), pi*4e-2)
         mskFatIn[tupPtFatIn] = 1
 
     # draw heart
     # Outer ellipse
-    y = 0 # -(1-z/nPix)*nPix*ampRes
+    y = 0 # -(1/2-abs(z/nPix))*nPix*ampRes
     x = 0
     rY = nPix*100e-3 + nPix*ampCar
     rX = nPix*120e-3 + nPix*ampCar
@@ -58,7 +58,7 @@ def _updateMask_Dynamic(
         mskMyoOt[tupPtMyoOt] = 1
 
     # Inner ellipse
-    y = 0 # -(1-z/nPix)*nPix*ampRes
+    y = 0 # -(1/2-abs(z/nPix))*nPix*ampRes
     x = -nPix*20e-3
     rY = nPix*60e-3  + nPix*2*ampCar
     rX = nPix*60e-3  + nPix*2*ampCar
@@ -107,15 +107,19 @@ def genPhan\
 (
     nDim:int=2, nPix:int=256,
     # motion parameter
-    arrAmp:ndarray=array([[0e-3,0e-3]]),
+    arrAmp:ndarray|None=None,
     # whether to return Phantom, M0 map, T1 map, T2 map, Om map
     rtPhan:bool=True, rtM0:bool=True, rtT1:bool=True, rtT2:bool=True, rtOm:bool=True,
     # number of additional ellipsoids for resolution test
     nEl:int=5,
 ) -> dict|ndarray[uint8]:
     assert nDim==2 or nDim==3
-    if nDim==2: arrZ = array([0])
-    if nDim==3: arrZ = arange(-nPix//2,nPix//2)
+    if nDim==2:
+        arrZ = array([0])
+        if arrAmp is None: arrAmp = array([[60e-3,0e-3]])
+    if nDim==3:
+        arrZ = arange(-nPix//2,nPix//2)
+        if arrAmp is None: arrAmp = array([[0e-3,0e-3]])
     nT = arrAmp.shape[0]
     nZ = arrZ.size
     # image array
@@ -128,7 +132,7 @@ def genPhan\
     mskMyoIn = zeros([nPix,nPix], dtype=bool)
     lstMskEl = [zeros([nPix,nPix], dtype=bool) for _ in range(nEl)]
 
-    # clear image
+    # generate image
     arrPhan.fill(0)
     for iZ in range(nZ):
         z = arrZ[iZ]
