@@ -5,8 +5,8 @@ from matplotlib.colors import ListedColormap
 
 nPix = 128
 
-mapPh = slime.genPhMap(3, nPix, pi/3)
-mapB0 = slime.genB0Map(3, nPix, 1) # unit: ppm
+mapPh = slime.Utility.genPhMap(3, nPix, pi/3)
+mapB0 = slime.Utility.genB0Map(3, nPix, 1) # unit: ppm
 
 dicPhan = slime.genPhan(3, nPix)
 mapM0 = dicPhan["M0"].squeeze()
