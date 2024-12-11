@@ -4,7 +4,7 @@ import slime
 
 # 2D
 nPix = 256
-arrM0 = slime.genPhan(nPix=nPix, rtPhan=False, rtT1=False, rtT2=False, rtOm=False)["M0"].squeeze()
+arrM0 = slime.genPhan(nPix=nPix)["M0"].squeeze()
 
 arrM0Abs = abs(arrM0)
 figure(figsize=(3,3), dpi=120)
@@ -13,7 +13,7 @@ draw(); pause(0.5)
 
 # 3D
 nPix = 128
-arrM0 = slime.genPhan(nDim=3, nPix=nPix, rtPhan=False, rtT1=False, rtT2=False, rtOm=False)["M0"].squeeze()
+arrM0 = slime.genPhan(nDim=3, nPix=nPix)["M0"].squeeze()
 
 arrM0Abs = abs(arrM0)
 figure(figsize=(9,3), dpi=120)
