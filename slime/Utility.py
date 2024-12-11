@@ -35,6 +35,22 @@ def genB0Map(nDim:int=2, nPix:int=256, std:int|float=1e-6*(2*pi*42.58e6*3)) -> n
     mapB0 *= std
     return mapB0
 
+def genCsm(nDim:int=2, nPix:int=256, nCh:int=12) -> ndarray:
+    mapCsm = zeros([nCh,*(nPix for _ in range(nDim))], complex128)
+    arrCoor = meshgrid\
+    (
+        *(linspace(-0.5,0.5,nPix,0) for _ in range(nDim)),
+        indexing="ij"
+    ); arrCoor = array(arrCoor).transpose(*arange(1,nDim+1), 0)
+    arrTht = linspace(0,2*pi,nCh,0)
+    arrCoorCoil = zeros([nCh,nDim], float64)
+    arrCoorCoil[:,-2:] = 1*array([sin(arrTht), cos(arrTht)]).T
+    for iCh in range(nCh):
+        mapCsm[iCh] = genPhMap(nDim=nDim, nPix=nPix, std=pi/6)
+        dist = sqrt(sum((arrCoor - arrCoorCoil[iCh])**2, axis=-1))
+        mapCsm[iCh] *= exp(-dist)
+    return mapCsm
+
 def genAmp(tScan:int|float, tRes:int|float, cyc:int|float, isRand:bool=True):
     """
     # parameter

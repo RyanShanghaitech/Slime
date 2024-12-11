@@ -3,16 +3,19 @@ from numpy import *
 from matplotlib.pyplot import *
 from matplotlib.colors import ListedColormap
 
+nDim = 3
 nPix = 128
 
-mapPh = slime.Utility.genPhMap(3, nPix, pi/3)
-mapB0 = slime.Utility.genB0Map(3, nPix, 1) # unit: ppm
+mapPh = slime.Utility.genPhMap(nDim, nPix, pi/3)
+mapB0 = slime.Utility.genB0Map(nDim, nPix, 1) # unit: ppm
 
 dicPhan = slime.genPhan(3, nPix)
 mapM0 = dicPhan["M0"].squeeze()
 mapT1 = dicPhan["T1"].squeeze()
 mapT2 = dicPhan["T2"].squeeze()
 mapOm = dicPhan["Om"].squeeze()
+
+mapCsm = slime.Utility.genCsm(nDim, nPix)
 
 # plot
 cmT1 = ListedColormap(loadtxt("./Resource/lipari.csv"), name="T1")
@@ -38,5 +41,11 @@ subplot(223)
 imshow(mapT2[:,nPix//2,:]*1000, cmap=cmT2); colorbar().set_label("ms"); title("T2 map")
 subplot(224)
 imshow(mapOm[:,nPix//2,:]); colorbar(); title("Om map")
+
+mapCsmAbs = abs(mapCsm)
+figure(figsize=(9,9), dpi=120)
+for iFig in range(3*4):
+    subplot(3,4,iFig+1)
+    imshow(mapCsmAbs[iFig][nPix//2,:,:], cmap="gray", vmin=0, vmax=1)
 
 show()
