@@ -26,23 +26,25 @@ def _updateMask_Dynamic(
     # Outer border of fat (expanding and contracting with breathing)
     y = 0 # -(1/2-abs(z/nPix))*nPix*ampRes
     x = 0
-    rY = nPix*400e-3 + (1/2-abs(z/nPix))*nPix*ampRes
-    rX = nPix*400e-3 - 0.5*(1/2-abs(z/nPix))*nPix*ampRes
+    rY = nPix*400e-3 + nPix*ampRes
+    rX = nPix*400e-3 - 0.5*nPix*ampRes
     rZ = nPix*480e-3
     rhs = 1 - (z/rZ)**2
+    # print(f"rY: {rY:.2f}, rX: {rX:.2f}")
+    # print(f"rhs: {rhs:.4f}, rY: {sqrt(rY**2*rhs):.2f}, rX: {sqrt(rX**2*rhs):.2f}")
     if rhs >= 0:
-        tupPtFatOt = ski.draw.ellipse(y+nPix//2, x+nPix//2, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix), pi*0e-2)
+        tupPtFatOt = ski.draw.ellipse(y+nPix//2, x+nPix//2, sqrt(rY**2*rhs), sqrt(rX**2*rhs), (nPix,nPix), pi*0e-2)
         mskFatOt[tupPtFatOt] = 1
     
     # Inner border of fat
     y = 0 # -(1/2-abs(z/nPix))*nPix*ampRes
     x = 0
-    rY = nPix*380e-3 + (1/2-abs(z/nPix))*nPix*ampRes
-    rX = nPix*380e-3 - 0.5*(1/2-abs(z/nPix))*nPix*ampRes
+    rY = nPix*380e-3 + nPix*ampRes
+    rX = nPix*380e-3 - 0.5*nPix*ampRes
     rZ = nPix*450e-3
     rhs = 1 - (z/rZ)**2
     if rhs >= 0:
-        tupPtFatIn = ski.draw.ellipse(y+nPix//2, x+nPix//2, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix), pi*4e-2)
+        tupPtFatIn = ski.draw.ellipse(y+nPix//2, x+nPix//2, sqrt(rY**2*rhs), sqrt(rX**2*rhs), (nPix,nPix), pi*4e-2)
         mskFatIn[tupPtFatIn] = 1
 
     # draw heart
@@ -54,18 +56,18 @@ def _updateMask_Dynamic(
     rZ = rY
     rhs = 1 - (z/rZ)**2
     if rhs >= 0:
-        tupPtMyoOt = ski.draw.ellipse(y+nPix//2, x+nPix//2, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix))
+        tupPtMyoOt = ski.draw.ellipse(y+nPix//2, x+nPix//2, sqrt(rY**2*rhs), sqrt(rX**2*rhs), (nPix,nPix))
         mskMyoOt[tupPtMyoOt] = 1
 
     # Inner ellipse
     y = 0 # -(1/2-abs(z/nPix))*nPix*ampRes
     x = -nPix*20e-3
-    rY = nPix*60e-3  + nPix*2*ampCar
-    rX = nPix*60e-3  + nPix*2*ampCar
+    rY = nPix*60e-3 + nPix*2*ampCar
+    rX = nPix*60e-3 + nPix*2*ampCar
     rZ = rY
     rhs = 1 - (z/rZ)**2
     if rhs > 0:
-        tupPtMyoIn = ski.draw.ellipse(y+nPix//2, x+nPix//2, rY*sqrt(rhs), rX*sqrt(rhs), (nPix,nPix))
+        tupPtMyoIn = ski.draw.ellipse(y+nPix//2, x+nPix//2, sqrt(rY**2*rhs), sqrt(rX**2*rhs), (nPix,nPix))
         mskMyoIn[tupPtMyoIn] = 1
 
 def _updateMask_Fixed(

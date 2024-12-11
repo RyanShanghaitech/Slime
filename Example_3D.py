@@ -14,7 +14,7 @@ cycCar = 1
 
 tElapse = time()
 
-ampRes = 100e-3*slime.genAmp(tScan, tRes, cycRes, 1)
+ampRes = 10e-3*slime.genAmp(tScan, tRes, cycRes, 1)
 ampCar = 10e-3*slime.genAmp(tScan, tRes, cycCar, 0)
 arrM0 = slime.genPhan(3, nPix, array([ampRes, ampCar]).T, rtPhan=False, rtT1=False, rtT2=False, rtOm=False)["M0"]
 
