@@ -51,7 +51,7 @@ def genCsm(nDim:int=2, nPix:int=256, nCh:int=12) -> ndarray:
     for iCh in range(nCh):
         mapC[iCh] = genPhMap(nDim=nDim, nPix=nPix, std=pi/16)
         dist = sqrt(sum((arrCoor - arrCoorCoil[iCh])**2, axis=-1))
-        mapC[iCh] = exp(-dist)
+        mapC[iCh] *= exp(-dist)
     mapC = mapC.transpose(*arange(1,nDim+1), 0)
     return mapC
 
