@@ -1,6 +1,6 @@
 from numpy import *
-from .Function import Part
 from scipy.ndimage import gaussian_filter
+from .Type import Part
 
 def genPhMap(nDim:int=2, nPix:int=256, std:int|float=pi/3) -> ndarray:
     """
@@ -38,9 +38,10 @@ def genB0Map(nDim:int=2, nPix:int=256, std:int|float=1e-6*(2*pi*42.58e6*3)) -> n
 def genAmp(tScan:int|float, tRes:int|float, cyc:int|float, isRand:bool=True):
     """
     # parameter
-    `tScan`: how many seconds this amplitude contains
+    `tScan`: how many seconds this waveform contains
     `tRes`: how many ticks per second
     `cyc`: cycle of desired signal in second
+    `isRand`: whether to randomize the waveform
     """
     nT = tScan*tRes
 
@@ -78,7 +79,7 @@ def Enum2T1(arrPhan:ndarray) -> ndarray:
 
 def Enum2T2(arrPhan:ndarray) -> ndarray:
     mapT2 = zeros_like(arrPhan, dtype=float64)
-    mapT2[arrPhan==Part.Air.value] = inf # 1e-3 # random.uniform(1e-3, 1000e-3, sum(arrPhan==Part.Air.value))
+    mapT2[arrPhan==Part.Air.value] = 1e-6 # random.uniform(1e-3, 1000e-3, sum(arrPhan==Part.Air.value))
     mapT2[arrPhan==Part.Fat.value] = 75e-3
     mapT2[arrPhan==Part.Body.value] = 40e-3
     mapT2[arrPhan==Part.Myo.value] = 50e-3

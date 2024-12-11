@@ -16,19 +16,18 @@ tElapse = time()
 
 ampRes = 20e-3*slime.genAmp(tScan, tRes, cycRes, 1)
 ampCar = 10e-3*slime.genAmp(tScan, tRes, cycCar, 0)
-arrP = slime.genPhan(3, nPix, array([ampRes, ampCar]).T)
-print(arrP.shape)
+arrM0 = slime.genPhan(3, nPix, array([ampRes, ampCar]).T, rtPhan=False, rtT1=False, rtT2=False, rtOm=False)["M0"]
 
 tElapse = time() - tElapse
 print(f"tElapse: {tElapse}")
 
-arrM0 = slime.Enum2M0(arrP)
-
 fig = figure()
 ax = fig.add_subplot(211)
 ax.plot(ampRes, ".-")
+ax.set_title("Respiratory")
 ax = fig.add_subplot(212)
 ax.plot(ampCar, ".-")
+ax.set_title("Cardiac")
 
 fig = figure(figsize=(9,3), dpi=120)
 ax1 = fig.add_subplot(131)
@@ -38,12 +37,13 @@ axim2 = ax2.imshow(zeros([nPix,nPix]), cmap='gray', vmin=0, vmax=1)
 ax3 = fig.add_subplot(133)
 axim3 = ax3.imshow(zeros([nPix,nPix]), cmap='gray', vmin=0, vmax=1)
 
+arrM0Abs = abs(arrM0)
 while 1:
     for iT in range(nT):
     # for iZ in range(nZ):
-        axim1.set_data(arrM0[iT,nPix//2,:,:])
-        axim2.set_data(arrM0[iT,:,nPix//2,:])
-        axim3.set_data(arrM0[iT,:,:,nPix//2])
+        axim1.set_data(arrM0Abs[iT,nPix//2,:,:])
+        axim2.set_data(arrM0Abs[iT,:,nPix//2,:])
+        axim3.set_data(arrM0Abs[iT,:,:,nPix//2])
         ax1.set_title(f"iT: {iT}")
         ax2.set_title(f"iT: {iT}")
         ax3.set_title(f"iT: {iT}")

@@ -1,14 +1,8 @@
 from numpy import *
 import skimage as ski
-from enum import Enum
+from .Type import Part
+from .Utility import Enum2M0, Enum2T1, Enum2T2, Enum2Om, genPhMap, genB0Map
 
-class Part(Enum):
-    Air = 0
-    Fat = 1
-    Body = 2
-    Myo = 3
-    Blood = 4
-    Other = 5
 
 # update masks
 def _updateMask_Dynamic(
@@ -114,9 +108,11 @@ def genPhan\
     nDim:int=2, nPix:int=256,
     # motion parameter
     arrAmp:ndarray=array([[0e-3,0e-3]]),
+    # whether to return Phantom, M0 map, T1 map, T2 map, Om map
+    rtPhan:bool=True, rtM0:bool=True, rtT1:bool=True, rtT2:bool=True, rtOm:bool=True,
     # number of additional ellipsoids for resolution test
-    nEl=5,
-):
+    nEl:int=5,
+) -> dict|ndarray[uint8]:
     assert nDim==2 or nDim==3
     if nDim==2: arrZ = array([0])
     if nDim==3: arrZ = arange(-nPix//2,nPix//2)
@@ -162,4 +158,12 @@ def genPhan\
             for msk in lstMskEl:
                 arrPhan[iT][iZ][msk] = Part.Other.value
 
-    return arrPhan
+    # dictionary to be returned
+    dic = dict()
+    if rtPhan: dic["Phan"] = arrPhan
+    if rtM0: dic["M0"] = Enum2M0(arrPhan)*genPhMap(nDim=nDim, nPix=nPix)
+    if rtT1: dic["T1"] = Enum2T1(arrPhan)
+    if rtT2: dic["T2"] = Enum2T2(arrPhan)
+    if rtOm: dic["Om"] = Enum2Om(arrPhan) + genB0Map(nDim=nDim, nPix=nPix)
+
+    return dic if len(dic) != 0 else arrPhan
