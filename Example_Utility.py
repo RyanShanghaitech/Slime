@@ -45,12 +45,12 @@ mapCsmAbs = abs(mapC)
 figure(figsize=(9,9), dpi=120)
 for iFig in range(3*4):
     subplot(3,4,iFig+1)
-    imshow(mapCsmAbs[nPix-2,:,:,iFig], cmap="gray", vmin=0, vmax=1)
+    imshow(mapCsmAbs[iFig,nPix-2,:,:], cmap="gray", vmin=0, vmax=1)
 
 mapCsmAng = angle(mapC)
 figure(figsize=(9,9), dpi=120)
 for iFig in range(3*4):
     subplot(3,4,iFig+1)
-    imshow(mapCsmAbs[nPix-2,:,:,iFig], cmap="hsv", vmin=-pi, vmax=pi)
+    imshow(mapCsmAbs[iFig,nPix-2,:,:], cmap="hsv", vmin=-pi, vmax=pi)
 
 show()
