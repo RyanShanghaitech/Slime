@@ -111,7 +111,7 @@ def genPhan\
     # motion parameter
     arrAmp:ndarray|None=None,
     # whether to return M0 map, T1 map, T2 map, etc, or original enum phantom
-    rtM0:bool=True, rtT1:bool=False, rtT2:bool=False, rtOm:bool=False, rtC:bool=False, rtPhan:bool=False, 
+    rtM0:bool=True, rtT1:bool=False, rtT2:bool=False, rtOm:bool=False, rtPhan:bool=False, 
     # number of additional ellipsoids for resolution test
     nEl:int=5,
 ) -> dict|ndarray[uint8]:
@@ -171,6 +171,5 @@ def genPhan\
     if rtT1: dic["T1"] = Enum2T1(arrPhan)
     if rtT2: dic["T2"] = Enum2T2(arrPhan)
     if rtOm: dic["Om"] = Enum2Om(arrPhan) + genB0Map(nDim=nDim, nPix=nPix)
-    if rtC: dic["C"] = genCsm(nDim=nDim, nPix=nPix)
 
     return dic if len(dic) != 0 else arrPhan

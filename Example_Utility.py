@@ -9,12 +9,12 @@ nPix = 128
 mapPh = slime.Utility.genPhMap(nDim, nPix, pi/3)
 mapB0 = slime.Utility.genB0Map(nDim, nPix, 1) # unit: ppm
 
-dicPhan = slime.genPhan(3, nPix, rtM0=1, rtT1=1, rtT2=1, rtOm=1, rtC=1)
+dicPhan = slime.genPhan(3, nPix, rtM0=1, rtT1=1, rtT2=1, rtOm=1)
 mapM0 = dicPhan["M0"].squeeze()
 mapT1 = dicPhan["T1"].squeeze()
 mapT2 = dicPhan["T2"].squeeze()
 mapOm = dicPhan["Om"].squeeze()
-mapC = dicPhan["C"].squeeze()
+mapC = slime.genCsm(nDim, nPix)
 
 # plot
 cmT1 = ListedColormap(loadtxt("./Resource/lipari.csv"), name="T1")
