@@ -2,40 +2,42 @@ from numpy import *
 from scipy.ndimage import gaussian_filter
 from .Type import Part
 
-def genPhMap(nDim:int=2, nPix:int=256, std:int|float=pi/3) -> ndarray:
+def genPhMap(nDim:int=2, nPix:int=256, mean:int|float|None=None, std:int|float=pi/16) -> ndarray:
     """
     # return
     smooth complex rotation factor
     """
+    if mean == None: mean = random.uniform(-pi,pi)
     mapPh = random.uniform(-pi, pi, [nPix for _ in range(nDim)])
-    sigma = nPix
+    sigma = nPix/4
     mapPh = gaussian_filter(mapPh, sigma)
     # normalize
     mapPh -= mapPh.mean(); mapPh = asarray(mapPh)
     mapPh /= mapPh.std()
     mapPh *= std
-    # add phase shift
-    mapPh += random.uniform(-pi, pi)
+    mapPh += mean
     # convert to rotation factor
     mapPh = exp(1j*mapPh)
     mapPh = mapPh/abs(mapPh)
     return mapPh
 
-def genB0Map(nDim:int=2, nPix:int=256, std:int|float=1e-6*(2*pi*42.58e6*3)) -> ndarray:
+def genB0Map(nDim:int=2, nPix:int=256, mean:int|float=0, std:int|float=1e-6*(2*pi*42.58e6*3)) -> ndarray:
     """
     # return
     smooth random number
     """
     mapB0 = random.uniform(-1, 1, [nPix for _ in range(nDim)])
-    sigma = nPix
+    sigma = nPix/4
     mapB0 = gaussian_filter(mapB0, sigma)
     # normalize
     mapB0 -= mapB0.mean(); mapB0 = asarray(mapB0)
     mapB0 /= mapB0.std()
     mapB0 *= std
+    mapB0 += mean
     return mapB0
 
-def genCsm(nDim:int=2, nPix:int=256, nCh:int=12) -> ndarray:
+def genCsm(nDim:int=2, nPix:int=256, nCh:int=12, mean:int|float|None=None, std:int|float=pi/16) -> ndarray:
+    if mean == None: mean = random.uniform(-pi,pi)
     mapC = zeros([nCh,*(nPix for _ in range(nDim))], dtype=complex128)
     arrCoor = meshgrid\
     (
@@ -46,10 +48,10 @@ def genCsm(nDim:int=2, nPix:int=256, nCh:int=12) -> ndarray:
     arrCoorCoil = zeros([nCh,nDim], dtype=float64)
     arrCoorCoil[:,-2:] = 1*array([sin(arrTht), cos(arrTht)]).T
     if nDim == 3:
-        arrCoorCoil[0::2,0] = 0.5
-        arrCoorCoil[1::2,0] = -0.5
+        arrCoorCoil[0::2,0] = 0.2
+        arrCoorCoil[1::2,0] = -0.2
     for iCh in range(nCh):
-        mapC[iCh] = genPhMap(nDim=nDim, nPix=nPix, std=pi/16)
+        mapC[iCh] = genPhMap(nDim=nDim, nPix=nPix, mean=mean, std=std)
         dist = sqrt(sum((arrCoor - arrCoorCoil[iCh])**2, axis=-1))
         mapC[iCh] *= exp(-dist)
     return mapC
