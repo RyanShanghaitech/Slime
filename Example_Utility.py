@@ -2,7 +2,6 @@ import slime
 from numpy import *
 from matplotlib.pyplot import *
 from matplotlib.colors import ListedColormap
-from matplotlib import gridspec
 
 nDim = 3
 nPix = 128
@@ -15,7 +14,7 @@ mapM0 = dicPhan["M0"].squeeze()
 mapT1 = dicPhan["T1"].squeeze()
 mapT2 = dicPhan["T2"].squeeze()
 mapOm = dicPhan["Om"].squeeze()
-mapC = slime.genCsm(nDim, nPix, std=pi/16)
+mapC = slime.genCsm(nDim, nPix, mean=0, std=pi/16)
 
 # plot
 cmT1 = ListedColormap(loadtxt("./Resource/lipari.csv"), name="T1")
