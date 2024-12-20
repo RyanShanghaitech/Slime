@@ -12,14 +12,14 @@ nZ = nPix
 cycRes = pi
 cycCar = 1
 
-tElapse = time()
+t = time()
 
 ampRes = 10e-3*slime.genAmp(tScan, tRes, cycRes, 1)
 ampCar = 10e-3*slime.genAmp(tScan, tRes, cycCar, 0)
 arrM0 = slime.genPhan(3, nPix, array([ampRes, ampCar]).T)["M0"]
 
-tElapse = time() - tElapse
-print(f"tElapse: {tElapse}")
+t = time() - t
+print(f"elapsed time: {t}")
 
 fig = figure()
 ax = fig.add_subplot(211)
