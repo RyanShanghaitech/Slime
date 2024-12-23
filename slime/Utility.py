@@ -80,7 +80,7 @@ def genAmp(tScan:int|float, tRes:int|float, cyc:int|float, isRand:bool=True):
 
 def Enum2M0(arrPhan:ndarray) -> ndarray:
     mapM0 = zeros_like(arrPhan, dtype=float64)
-    mapM0[arrPhan==Part.Air.value] = random.randn(sum(arrPhan==Part.Air.value))*1e-3
+    mapM0[arrPhan==Part.Air.value] = 0 # random.randn(sum(arrPhan==Part.Air.value))*1e-3
     mapM0[arrPhan==Part.Fat.value] = 1.0
     mapM0[arrPhan==Part.Body.value] = 0.5
     mapM0[arrPhan==Part.Myo.value] = 0.2
@@ -111,10 +111,10 @@ def Enum2T2(arrPhan:ndarray) -> ndarray:
 def Enum2Om(arrPhan:ndarray, B0:int|float=3) -> ndarray:
     mapOm = zeros_like(arrPhan, dtype=float64)
     ppm2om = 1e-6*(2*pi*42.58e6*B0)
-    mapOm[arrPhan==Part.Air.value] = random.uniform(1e-3, 10e-3, sum(arrPhan==Part.Air.value))*ppm2om
+    mapOm[arrPhan==Part.Air.value] = 0 # random.uniform(1e-3, 10e-3, sum(arrPhan==Part.Air.value))*ppm2om
     mapOm[arrPhan==Part.Fat.value] = 3.5*ppm2om
     mapOm[arrPhan==Part.Body.value] = 0
     mapOm[arrPhan==Part.Myo.value] = 0
     mapOm[arrPhan==Part.Blood.value] = 0
-    mapOm[arrPhan==Part.Other.value] = 1*ppm2om
+    mapOm[arrPhan==Part.Other.value] = 3.5*ppm2om
     return mapOm
