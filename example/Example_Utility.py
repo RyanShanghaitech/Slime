@@ -6,14 +6,14 @@ from matplotlib.colors import ListedColormap
 nDim = 3
 nPix = 128
 
-mapPh = slime.Utility.genPhMap(nDim, nPix, std=pi/16)
-mapB0 = slime.Utility.genB0Map(nDim, nPix, std=1) # unit: ppm
+mapPh = slime.genPhMap(nDim, nPix, std=pi/16)
+mapB0 = slime.genB0Map(nDim, nPix, std=1) # unit: ppm
 
-dicPhan = slime.genPhan(nDim, nPix, rtM0=1, rtT1=1, rtT2=1, rtOm=1)
-mapM0 = dicPhan["M0"].squeeze()
-mapT1 = dicPhan["T1"].squeeze()
-mapT2 = dicPhan["T2"].squeeze()
-mapOm = dicPhan["Om"].squeeze()
+arrPhant = slime.genPhant(nDim, nPix)
+mapM0 = slime.Enum2M0(arrPhant)
+mapT1 = slime.Enum2T1(arrPhant)
+mapT2 = slime.Enum2T2(arrPhant)
+mapOm = slime.Enum2Om(arrPhant)
 mapC = slime.genCsm(nDim, nPix, mean=0, std=pi/16)
 
 # plot
