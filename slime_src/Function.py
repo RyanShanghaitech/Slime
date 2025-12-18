@@ -96,11 +96,11 @@ def genAmp(tScan:int|float, tRes:int|float, cyc:int|float, isRand:bool=True) -> 
 
     return arrAmp
 
-def genResAmp(tScan:int|float, tRes:int|float, cyc:int|float=pi) -> ndarray:
-    return genAmp(tScan, tRes, cyc, 1)
+def genResAmp(tScan:int|float, tRes:int|float, cyc:int|float=pi/2) -> ndarray:
+    return 20e-3*genAmp(tScan, tRes, cyc, 1)
 
 def genCarAmp(tScan:int|float, tRes:int|float, cyc:int|float=1) -> ndarray:
-    return genAmp(tScan, tRes, cyc, 0)
+    return 10e-3*genAmp(tScan, tRes, cyc, 0)
 
 def Enum2M0(arrPhan:ndarray, ampCar:double=0e0) -> ndarray:
     mapM0 = zeros_like(arrPhan, dtype=float64)
