@@ -1,3 +1,20 @@
 [build-system]
 requires = ["setuptools", "numpy"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "MRPhantom"
+version = "0.0.0"
+dependencies = ["numpy"]
+
+description = "MRI Phantom of a Slime with Repiratory and Cardiac Motion, and M0, Phase, T1, T2, B0 maps, Boosted by a C-API Backend."
+keywords = ["MRI", "Phantom", "Motion", "Quantitative"]
+authors = [{name = "Ryan", email = "ryan_shanghaitech@proton.me"}]
+
+license = "MIT"
+license-files = ["LICENSE"]
+readme = "README.md"
+
+[project.urls]
+Repository = "https://github.com/RyanShanghaitech/Slime"
+Examples = "https://github.com/RyanShanghaitech/Slime/tree/main/example"

@@ -1,0 +1,23 @@
+{
+    "version": 4,
+    "configurations": [
+        {
+            "name": "Linux",
+            "compilerPath": "/usr/bin/g++",
+            "intelliSenseMode": "gcc-x64",
+            "cppStandard": "c++17",
+            "cStandard": "c11",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/home/ryan/anaconda3/envs/default/lib/python3.12/site-packages/numpy/core/include",
+                "/home/ryan/anaconda3/envs/default/include/python3.12"
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ]
+}
