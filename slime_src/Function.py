@@ -82,7 +82,7 @@ def genAmp(tScan:int|float, tRes:int|float, cyc:int|float, isRand:bool=True) -> 
     `cyc`: cycle of desired signal in second
     `isRand`: whether to randomize the waveform
     '''
-    nT = int(tScan/tRes)
+    nT = around(tScan/tRes).astype(int)
 
     if isRand:
         arrT = sort(random.rand(nT)*tScan)
