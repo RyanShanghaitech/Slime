@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "MRPhantom"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = ["numpy"]
 
 description = "MRI Phantom of a Slime with Repiratory and Cardiac Motion, and M0, Phase, T1, T2, B0 maps, Boosted by a C-API Backend."
