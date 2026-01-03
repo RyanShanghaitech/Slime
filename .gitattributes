@@ -1,3 +1,0 @@
-* linguist-vendored
-mrphantom_src/ -linguist-vendored # only calculate the package source
-# mrphantom_src/ext/ -linguist-vendored # only calculate the C++ extension
