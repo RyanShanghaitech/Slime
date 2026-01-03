@@ -3,15 +3,15 @@ import numpy
 
 _sources = \
 [
-    './slime_src/ext/main.cpp',
-    './slime_src/ext/slime.cpp',
+    './mrphantom_src/ext/main.cpp',
+    './mrphantom_src/ext/slime.cpp',
 ]
 
 modExt = Extension\
 (
-    "slime.ext", 
+    "mrphantom.ext", 
     sources = _sources,
-    include_dirs = ["./slime_src/ext/", numpy.get_include()],
+    include_dirs = ["./mrphantom_src/ext/", numpy.get_include()],
     language = 'c++',
     extra_compile_args = ["-O3", "-fopenmp"],
     extra_link_args = ["-fopenmp"],
@@ -19,19 +19,19 @@ modExt = Extension\
 
 _packages = \
 [
-    "slime", 
-    "slime.ext",
+    "mrphantom", 
+    "mrphantom.ext",
 ]
 
 _package_dir = \
 {
-    "slime":"./slime_src/", 
-    "slime.ext":"./slime_src/ext/",
+    "mrphantom":"./mrphantom_src/", 
+    "mrphantom.ext":"./mrphantom_src/ext/",
 }
 
 setup\
 (
-    name = 'slime',
+    name = 'mrphantom',
     ext_modules = [modExt],
     packages = _packages,
     package_dir = _package_dir,

@@ -20,33 +20,33 @@ bool inline checkNarg(int64_t lNarg, int64_t lNargExp)
 static PyObject* genPhant_py(PyObject* self, PyObject* const* args, Py_ssize_t nargs)
 {
     checkNarg(nargs,4);
-    int64_t lNAx = PyLong_AsLongLong(args[0]);
-    int64_t lNPix = PyLong_AsLongLong(args[1]);
-    double dResAmp = PyFloat_AsDouble(args[2]);
-    double dCarAmp = PyFloat_AsDouble(args[3]);
+    int64_t nAx = PyLong_AsLongLong(args[0]);
+    int64_t nPix = PyLong_AsLongLong(args[1]);
+    double ampRes = PyFloat_AsDouble(args[2]);
+    double ampCar = PyFloat_AsDouble(args[3]);
 
     // Generate into std::vector
     std::vector<uint8_t> vu8Phant;
-    genPhant(lNAx, lNPix, dResAmp, dCarAmp, &vu8Phant);
+    genPhant(nAx, nPix, ampRes, ampCar, &vu8Phant);
 
     // convert vector to numpy array
-    PyObject* ppyoNpa;
+    PyObject* pPyObj_Arr;
     {
-        npy_intp aDims[] = {lNPix, lNPix, lNPix};
-        ppyoNpa = PyArray_ZEROS(lNAx, aDims, NPY_UINT8, 0);
+        npy_intp aDims[] = {nPix, nPix, nPix};
+        pPyObj_Arr = PyArray_ZEROS(nAx, aDims, NPY_UINT8, 0);
     }
 
     // fill the data in
-    std::memcpy(PyArray_DATA((PyArrayObject*)ppyoNpa),
+    std::memcpy(PyArray_DATA((PyArrayObject*)pPyObj_Arr),
                 vu8Phant.data(),
                 vu8Phant.size() * sizeof(uint8_t));
 
-    return ppyoNpa;
+    return pPyObj_Arr;
 }
 
 static PyMethodDef aMeth[] =
 {
-    {"genPhant", (PyCFunction)genPhant_py, METH_FASTCALL, "genPhant(lNAx, lNPix, dResAmp, dCarAmp) -> np.ndarray[uint8]"},
+    {"genPhant", (PyCFunction)genPhant_py, METH_FASTCALL, "genPhant(nAx, nPix, ampRes, ampCar) -> np.ndarray[uint8]"},
     {NULL, NULL, 0, NULL}
 };
 

@@ -95,17 +95,8 @@ bool genPhant
             continue;
         }
         
-        // vessel balls (move with FatIn distortion; positioned away from heart)
-        const double dFatIn0_rX = dNPix*380e-3;
-        const double dFatIn0_rY = dNPix*380e-3;
-        const double dFatIn0_rZ = dNPix*450e-3;
-
-        const double sX = dFatIn_rX / dFatIn0_rX;
-        const double sY = dFatIn_rY / dFatIn0_rY;
-        const double sZ = dFatIn_rZ / dFatIn0_rZ;
-
         // vessel balls
-        #define V_HIT(cx,cy,cz,div) isInsideEllipsoid(x,y,z, ((cx)*dNPix*sX), ((cy)*dNPix*sY), ((cz)*dNPix*sZ), (dFatIn_rX/(div)), (dFatIn_rY/(div)), (dFatIn_rZ/(div)))
+        #define V_HIT(cx,cy,cz,div) isInsideEllipsoid(x,y,z, ((cx)*dNPix), ((cy)*dNPix), ((cz)*dNPix), (dFatIn_rX/(div)), (dFatIn_rY/(div)), (dFatIn_rZ/(div)))
 
         // 48 “random” vessels (cx,cy,cz in dNPix fractions; div in ~[18..44])
         #define VLIST \

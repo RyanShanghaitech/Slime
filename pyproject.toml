@@ -16,5 +16,5 @@ license-files = ["LICENSE"]
 readme = "README.md"
 
 [project.urls]
-Repository = "https://github.com/RyanShanghaitech/Slime"
-Examples = "https://github.com/RyanShanghaitech/Slime/tree/main/example"
+Repository = "https://github.com/RyanShanghaitech/MRPhantom"
+Examples = "https://github.com/RyanShanghaitech/MRPhantom/tree/main/example"

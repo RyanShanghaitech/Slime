@@ -1,6 +1,6 @@
 from numpy import *
 from matplotlib.pyplot import *
-import slime
+from mrphantom import *
 from time import time
 
 tScan = 10
@@ -10,8 +10,8 @@ nPix = 256
 
 cycRes = pi/2
 cycCar = 1
-arrAmpRes = 20e-3*slime.genAmp(tScan, tRes, cycRes, 1)
-arrAmpCar = 10e-3*slime.genAmp(tScan, tRes, cycCar, 0)
+arrAmpRes = genResAmp(tScan, tRes, cycRes)
+arrAmpCar = genCarAmp(tScan, tRes, cycCar)
 
 fig = figure()
 ax = fig.add_subplot(211)
@@ -27,8 +27,10 @@ axim = ax.imshow(zeros([nPix,nPix]), cmap='gray', vmin=0, vmax=1)
 
 while 1:
     for iT in range(nT):
-        arrPhant = slime.genPhant(2, nPix, arrAmpRes[iT], arrAmpCar[iT])
-        arrM0 = slime.Enum2M0(arrPhant, arrAmpCar[iT])
+        t = time()
+        arrPhant = genPhant(2, nPix, arrAmpRes[iT], arrAmpCar[iT])
+        arrM0 = Enum2M0(arrPhant, arrAmpCar[iT])
+        if iT%10==0: print(f"{(time()-t)*1e3:.3f} ms / frame")
         
         axim.set_data(arrM0)
         ax.set_title(f"time: {iT*tRes:.2f}s")

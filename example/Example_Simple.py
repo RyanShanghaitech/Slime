@@ -1,21 +1,20 @@
 from numpy import *
 from matplotlib.pyplot import *
-import slime
+from mrphantom import *
 
 # 2D
 nPix = 4096
-arrPhant = slime.genPhant(nAx=2, nPix=nPix)
-arrM0 = slime.Enum2M0(arrPhant)
+arrPhant = genPhant(nAx=2, nPix=nPix)
+arrM0 = Enum2M0(arrPhant)
 
 arrM0Abs = abs(arrM0)
 figure(figsize=(3,3), dpi=120)
 imshow(arrM0Abs, cmap="gray"); colorbar()
-draw(); pause(0.5)
 
 # 3D
 nPix = 256
-arrPhant = slime.genPhant(nAx=3, nPix=nPix)
-arrM0 = slime.Enum2M0(arrPhant)
+arrPhant = genPhant(nAx=3, nPix=nPix)
+arrM0 = Enum2M0(arrPhant)
 
 arrM0Abs = abs(arrM0)
 figure(figsize=(9,3), dpi=120)
@@ -25,7 +24,8 @@ subplot(132)
 imshow(arrM0Abs[:,nPix//2,:], cmap="gray"); colorbar()
 subplot(133)
 imshow(arrM0Abs[:,:,nPix//2], cmap="gray"); colorbar()
-draw(); pause(0.5)
+
+show()
 
 # --- NEW FIGURE: animated 3D slice viewer (does not modify the static figure) ---
 V = arrM0Abs  # already computed above (shape: [nPix,nPix,nPix])
